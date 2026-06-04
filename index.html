@@ -769,7 +769,7 @@
       <div class="ap-header-icon">⚙️</div>
       <div class="ap-header-text">
         <h3>Panel Admin</h3>
-        <span>Mundial 2026 · 72 partidos</span>
+        <span>Mundial 2026 · 18 partidos</span>
       </div>
       <button class="ap-close" title="Cerrar" onclick="togglePanelAdmin()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -854,8 +854,8 @@
       <div class="q-stripe"></div>
       <div id="contenedor-partidos" class="partidos-grid"></div>
       <footer class="q-footer">
-        <span>⚽ MUNDIAL 2026 · 72 PARTIDOS</span>
-      </footer>
+  <span>⚽ MUNDIAL 2026 · 18 PARTIDOS</span>
+</footer>
     </div>
 
     <div class="acciones" id="acciones">
@@ -1004,7 +1004,13 @@
       { local: 'suiza',         visita: 'bosnia',          fecha: '2026-06-18', hora: '13:00', canales: ['vix'] },
       { local: 'canada',        visita: 'qatar',           fecha: '2026-06-18', hora: '16:00', canales: ['vix'] },
       { local: 'canada',        visita: 'suiza',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] },
-      { local: 'bosnia',        visita: 'qatar',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] }
+      { local: 'bosnia',        visita: 'qatar',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] },
+      { local: 'brasil',        visita: 'marruecos',       fecha: '2026-06-13', hora: '16:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'haiti',         visita: 'escocia',         fecha: '2026-06-13', hora: '19:00', canales: ['vix'] },
+      { local: 'escocia',       visita: 'marruecos',       fecha: '2026-06-19', hora: '16:00', canales: ['vix'] },
+      { local: 'brasil',        visita: 'haiti',           fecha: '2026-06-19', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'brasil',        visita: 'escocia',         fecha: '2026-06-24', hora: '16:00', canales: ['vix'] },
+      { local: 'marruecos',     visita: 'haiti',           fecha: '2026-06-24', hora: '16:00', canales: ['vix'] }
     ];
 }
 
@@ -1503,7 +1509,7 @@ async function init() {
   let partidos = PARTIDOS_DEFAULT;
   let titulo   = 'MUNDIAL 2026';
 
-  if (guardado && Array.isArray(guardado.partidos) && guardado.partidos.length === 12) {
+  if (guardado && Array.isArray(guardado.partidos) && guardado.partidos.length === 18) {
     partidos = guardado.partidos.map(p => ({
       ...p,
       canales: normalizarCanales(p.canales || p.canal),
