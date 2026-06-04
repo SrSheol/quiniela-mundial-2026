@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiniela · Mundial 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --rojo:         #c0392b;
+      --rojo-mid:     #e74c3c;
+      --verde:        #0a5c36;
+      --verde-mid:    #0e7a48;
+      --verde-deep:   #073d24;
+      --verde-lite:   #e8f5ee;
+      --dorado:       #d4a017;
+      --dorado-dark:  #a87c10;
+      --dorado-mid:   #f0b429;
+      --dorado-lite:  #fff8e1;
+      --blanco:       #ffffff;
+      --gris-bg:      #f2f5f3;
+      --gris-borde:   #e0e8e4;
+      --gris-texto:   #5a6b63;
+      --gris-dark:    #374740;
+      --negro:        #1a2620;
+      --sombra-card:  0 8px 40px rgba(10,92,54,.14), 0 2px 8px rgba(10,92,54,.08);
+      --sombra-fab:   0 6px 20px rgba(10,92,54,.5);
+      --radius:       16px;
+      --radius-sm:    10px;
+      --radius-xs:    6px;
+      --trans:        .22s cubic-bezier(.4,0,.2,1);
+      --font-cond:    'Barlow Condensed', sans-serif;
+      --font-body:    'Barlow', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    body {
+      background: var(--gris-bg);
+      font-family: var(--font-body);
+      color: var(--negro);
+      min-height: 100vh;
+      padding: 24px 16px 80px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 85% 5%, rgba(192,57,43,.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 8% 95%, rgba(10,92,54,.08) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(3,18,10,.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-box {
+      position: relative;
+      background: var(--blanco);
+      border-radius: 22px;
+      padding: 36px 32px 28px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 28px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.06);
+      animation: modalIn .45s cubic-bezier(.34,1.4,.64,1) both;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(.78) translateY(24px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-logo { display: flex; justify-content: center; margin-bottom: 18px; }
+
+    .modal-badge {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--rojo) 0%, var(--verde) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 8px 28px rgba(10,92,54,.4);
+      animation: badgePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.04); }
+    }
+
+    .modal-title-line1 {
+      display: block;
+      font-family: var(--font-cond);
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--gris-texto);
+      text-transform: uppercase;
+    }
+
+    .modal-title-line2 {
+      display: block;
+      font-family: var(--font-cond);
+      font-size: 38px; font-weight: 900;
+      line-height: 1;
+      color: var(--rojo);
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+    }
+
+    .modal-title-season {
+      display: block;
+      font-family: var(--font-cond);
+      font-size: 15px; font-weight: 600;
+      font-style: italic;
+      color: var(--verde);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px; margin-bottom: 16px;
+    }
+
+    .modal-subtitle { font-size: 14px; color: var(--gris-texto); margin-bottom: 18px; }
+
+    .modal-input-wrap { position: relative; margin-bottom: 14px; }
+
+    .input-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px; pointer-events: none; opacity: 0.6;
+    }
+
+    .modal-input-wrap input {
+      width: 100%;
+      padding: 13px 16px 13px 42px;
+      border: 2px solid var(--gris-borde);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 16px; font-weight: 500;
+      color: var(--negro); outline: none;
+      transition: border-color var(--trans), box-shadow var(--trans);
+      background: #fafcfb;
+    }
+
+    .modal-input-wrap input:focus {
+      border-color: var(--verde);
+      background: var(--blanco);
+      box-shadow: 0 0 0 4px rgba(10,92,54,.1);
+    }
+
+    .modal-input-wrap input::placeholder { color: #b0bdb8; }
+
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--verde) 0%, var(--verde-mid) 100%);
+      color: var(--blanco); border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-cond);
+      font-size: 18px; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: all var(--trans);
+      box-shadow: 0 4px 16px rgba(10,92,54,.38);
+      position: relative; overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.12) 0%, transparent 100%);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,92,54,.5); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .modal-hint { margin-top: 14px; font-size: 12px; color: #aab5b0; font-style: italic; }
+    .modal-hint strong { color: var(--verde); font-style: normal; }
+
+    .quiniela {
+      background: var(--blanco);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--sombra-card);
+      border: 1.5px solid var(--gris-borde);
+      width: 100%; max-width: 520px;
+    }
+
+    .q-header {
+      background: var(--verde-deep);
+      color: var(--blanco);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px; padding: 16px 18px;
+      position: relative; overflow: hidden;
+    }
+
+    .q-header-bg {
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(60deg, transparent, transparent 18px, rgba(192,57,43,.06) 18px, rgba(192,57,43,.06) 19px),
+        repeating-linear-gradient(-60deg, transparent, transparent 18px, rgba(212,160,23,.04) 18px, rgba(212,160,23,.04) 19px);
+      pointer-events: none;
+    }
+
+    .q-col-left { display: flex; align-items: center; justify-content: flex-start; position: relative; }
+
+    .q-logo-wrap img {
+      width: 60px; height: 60px;
+      object-fit: cover; border-radius: 10px;
+      background: transparent; display: block;
+    }
+
+    .q-logo-fallback {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--rojo) 0%, var(--verde) 100%);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+
+    .q-col-center { text-align: center; position: relative; }
+
+    .q-season {
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.55);
+      text-transform: uppercase; margin-bottom: 1px;
+    }
+
+    #tituloJornada {
+      font-family: var(--font-cond);
+      font-size: 28px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 0;
+      color: var(--dorado); line-height: 1;
+    }
+
+    .q-subtitle {
+      font-family: var(--font-cond);
+      font-size: 12px; font-weight: 600;
+      font-style: italic;
+      color: rgba(255,255,255,.6);
+      letter-spacing: .5px; margin-top: 2px;
+    }
+
+    .q-title-accent {
+      width: 32px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+      margin: 4px auto 0;
+    }
+
+    .q-col-right {
+      text-align: right; display: flex;
+      flex-direction: column; align-items: flex-end;
+      min-width: 0; position: relative;
+    }
+
+    .q-jugador-label {
+      display: block; font-size: 9px; font-weight: 600;
+      letter-spacing: 1.2px;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase; margin-bottom: 2px; white-space: nowrap;
+    }
+
+    #nombreJugador {
+      font-family: var(--font-cond);
+      font-size: 16px; font-weight: 800;
+      color: var(--dorado); text-transform: uppercase;
+      word-break: break-word; max-width: 110px;
+      text-align: right; line-height: 1.1;
+    }
+
+    .q-stripe {
+      height: 6px;
+      background: linear-gradient(90deg, var(--rojo) 0%, var(--rojo-mid) 25%, var(--blanco) 50%, var(--verde-mid) 75%, var(--verde) 100%);
+    }
+
+    .partidos-grid { padding: 0; background: var(--blanco); }
+
+    .partido {
+      border-bottom: 1px solid var(--gris-borde);
+      padding: 12px 14px 0;
+      position: relative; background: var(--blanco);
+    }
+
+    .partido:last-child { border-bottom: none; }
+    .partido:nth-child(odd) { background: #fafcfb; }
+
+    .partido-num {
+      position: absolute; left: 14px; top: 13px;
+      font-family: var(--font-cond);
+      font-size: 11px; font-weight: 700;
+      color: var(--dorado); letter-spacing: .3px; opacity: 0.9;
+    }
+
+    .fila-partido {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      gap: 4px; padding: 4px 0 8px;
+    }
+
+    .equipo {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 5px;
+      flex: 1; min-width: 0;
+    }
+
+    .equipo img { width: 62px; height: 62px; object-fit: contain; display: block; }
+
+    .equipo-nombre {
+      font-family: var(--font-cond);
+      font-size: 12px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: .3px;
+      text-align: center; line-height: 1.2;
+      max-width: 90px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .equipo-local  .equipo-nombre { color: var(--verde); }
+    .equipo-visita .equipo-nombre { color: var(--rojo); }
+
+    .equipo-fallback {
+      width: 62px; height: 62px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-cond);
+      font-size: 14px; font-weight: 900;
+      background: var(--verde-lite); color: var(--verde);
+      border-radius: 8px;
+    }
+
+    .score-zone {
+      display: flex; align-items: center; justify-content: center;
+      gap: 4px; flex-shrink: 0; padding: 0 8px;
+    }
+
+    .score-wrap { display: flex; align-items: center; }
+
+    .score {
+      width: 50px; height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid rgba(10,92,54,.25);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-cond);
+      font-size: 30px; font-weight: 800;
+      color: var(--verde); cursor: text; outline: none;
+      caret-color: var(--dorado);
+      -webkit-user-select: text; user-select: text;
+      line-height: 1; text-align: center;
+      background: var(--blanco);
+      transition: border-color var(--trans), background var(--trans), color var(--trans);
+    }
+
+    .score:focus {
+      border-color: var(--dorado);
+      background: var(--dorado-lite);
+      color: var(--gris-dark);
+      box-shadow: 0 0 0 3px rgba(212,160,23,.18);
+    }
+
+    .score-divider {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 2px; padding: 0 6px;
+    }
+
+    .score-divider-dash { width: 12px; height: 2px; background: var(--gris-borde); border-radius: 1px; }
+
+    .vs-text {
+      font-family: var(--font-cond);
+      font-size: 11px; font-weight: 900;
+      color: #ccc; letter-spacing: 1.5px;
+    }
+
+    /* ── Info bar con soporte multi-canal ── */
+    .p-info-bar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      min-height: 30px; margin-top: 2px; padding: 4px 14px;
+      background: linear-gradient(90deg, var(--verde) 0%, #66bb6a 20%, var(--blanco) 50%, #e57373 80%, var(--rojo) 100%);
+      border-radius: 0; position: relative; overflow: hidden;
+    }
+
+    .partido:last-child .p-info-bar { border-radius: 0 0 4px 4px; }
+
+    .p-info-bar::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,.1);
+    }
+
+    .p-bar-fecha {
+      font-family: var(--font-cond);
+      font-size: 13px; font-weight: 900;
+      color: #ffe600; text-transform: uppercase;
+      letter-spacing: .5px;
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 1px 3px rgba(0,0,0,.7);
+      white-space: nowrap; position: relative;
+    }
+
+    /* Contenedor de múltiples canales */
+    .p-bar-canales {
+      display: flex; align-items: center;
+      gap: 6px; position: relative;
+      flex-wrap: nowrap;
+    }
+
+    /* Separador entre canales */
+    .p-bar-canal-sep {
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.5);
+      flex-shrink: 0;
+    }
+
+    /* Un canal individual */
+    .p-bar-canal-item {
+      display: flex; align-items: center;
+      gap: 3px;
+    }
+
+    .p-bar-canal-item img {
+      height: 16px; width: auto; max-width: 38px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.3));
+    }
+
+    .p-bar-canal-label {
+      font-family: var(--font-cond);
+      font-size: 11px; font-weight: 900;
+      color: #000000;
+      text-shadow: 0 0 4px rgba(255,255,255,.5);
+      text-transform: uppercase; white-space: nowrap;
+    }
+
+    .p-bar-hora {
+      font-family: var(--font-cond);
+      font-size: 13px; font-weight: 900;
+      color: #ffe600; text-transform: uppercase;
+      letter-spacing: .5px;
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 1px 3px rgba(0,0,0,.7);
+      white-space: nowrap; position: relative;
+    }
+
+    .q-footer {
+      background: var(--verde-deep); padding: 8px 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-cond);
+      font-size: 10px; font-weight: 700;
+      color: rgba(255,255,255,.3);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    .acciones { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+
+    .btn-accion {
+      flex: 1; min-width: 140px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 14px 20px;
+      border: none; border-radius: var(--radius-sm);
+      font-family: var(--font-cond);
+      font-size: 16px; font-weight: 800;
+      letter-spacing: .8px; text-transform: uppercase;
+      cursor: pointer; transition: all var(--trans);
+      position: relative; overflow: hidden;
+    }
+
+    .btn-accion::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.1) 0%, transparent 100%);
+    }
+
+    .btn-guardar {
+      background: linear-gradient(135deg, var(--verde) 0%, var(--verde-mid) 100%);
+      color: var(--blanco);
+      box-shadow: 0 4px 16px rgba(10,92,54,.35);
+    }
+
+    .btn-guardar:hover  { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,92,54,.5); }
+    .btn-guardar:active { transform: translateY(0); }
+
+    .btn-compartir {
+      background: linear-gradient(135deg, var(--dorado-dark) 0%, var(--dorado-mid) 100%);
+      color: #3a2200;
+      box-shadow: 0 4px 16px rgba(212,160,23,.35);
+    }
+
+    .btn-compartir:hover  { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,160,23,.5); }
+    .btn-compartir:active { transform: translateY(0); }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--verde-deep); color: var(--blanco);
+      font-family: var(--font-cond);
+      font-size: 15px; font-weight: 700;
+      padding: 12px 24px; border-radius: 100px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 9999; white-space: nowrap;
+      max-width: calc(100vw - 48px); text-align: center;
+      border: 1px solid rgba(212,160,23,.3);
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .admin-fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--verde) 0%, var(--verde-mid) 100%);
+      color: var(--blanco);
+      border: 2px solid rgba(212,160,23,.4);
+      font-size: 22px; cursor: pointer;
+      z-index: 8000; box-shadow: var(--sombra-fab);
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--trans);
+    }
+
+    .admin-fab:hover { transform: scale(1.1) rotate(30deg); box-shadow: 0 10px 28px rgba(10,92,54,.65); }
+
+    .admin-panel {
+      position: fixed; right: 20px; bottom: 92px;
+      width: 308px; max-height: 75vh;
+      display: flex; flex-direction: column;
+      background: #111d17;
+      border: 1px solid rgba(212,160,23,.18);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.04);
+      z-index: 8500; overflow: hidden;
+      font-family: var(--font-body); font-size: 14px;
+      animation: panelIn .25s cubic-bezier(.34,1.25,.64,1) both;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(16px) scale(.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .ap-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(212,160,23,.06); flex-shrink: 0;
+    }
+
+    .ap-header-icon { font-size: 22px; line-height: 1; }
+    .ap-header-text { flex: 1; }
+
+    .ap-header-text h3 {
+      font-family: var(--font-cond);
+      font-size: 17px; font-weight: 800;
+      color: var(--blanco); letter-spacing: .5px; line-height: 1.1;
+    }
+
+    .ap-header-text span { font-size: 11px; color: rgba(255,255,255,.35); letter-spacing: .3px; }
+
+    .ap-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,.08); border: none;
+      color: rgba(255,255,255,.7); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--trans), color var(--trans); flex-shrink: 0;
+    }
+
+    .ap-close:hover { background: rgba(255,255,255,.18); color: var(--blanco); }
+
+    .ap-body { overflow-y: auto; flex: 1; padding-bottom: 12px; }
+    .ap-body::-webkit-scrollbar { width: 4px; }
+    .ap-body::-webkit-scrollbar-track { background: transparent; }
+    .ap-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+
+    .ap-section { padding: 14px 16px 6px; }
+    .ap-danger-section { padding-top: 10px; }
+    .ap-divider { border: none; border-top: 1px solid rgba(255,255,255,.06); margin: 8px 0; }
+
+    .ap-label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase;
+      color: rgba(255,255,255,.38);
+      margin-bottom: 7px; margin-top: 12px;
+    }
+
+    .ap-label:first-child { margin-top: 0; }
+    .ap-label-danger { color: rgba(192,57,43,.7); }
+
+    .ap-input-row { display: flex; gap: 8px; align-items: stretch; }
+    .ap-input-row .ap-input { flex: 1; }
+
+    .ap-btn-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-xs);
+      background: var(--verde); border: none; color: var(--blanco);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background var(--trans);
+    }
+
+    .ap-btn-icon:hover { background: var(--verde-mid); }
+
+    .ap-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ap-form-col { display: flex; flex-direction: column; }
+    .ap-form-col .ap-label { margin-top: 0; }
+
+    .ap-input, .ap-select {
+      width: 100%; padding: 9px 11px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.06);
+      color: var(--blanco); font-family: var(--font-body);
+      font-size: 13.5px; outline: none;
+      transition: border-color var(--trans), background var(--trans);
+      appearance: auto;
+    }
+
+    .ap-input:focus, .ap-select:focus { border-color: var(--dorado); background: rgba(212,160,23,.06); }
+    .ap-input::placeholder { color: rgba(255,255,255,.25); }
+    .ap-select option { background: #111d17; color: var(--blanco); }
+
+    /* Multi-select canales en admin */
+    .ap-select[multiple] {
+      height: 90px;
+      padding: 4px;
+    }
+
+    .ap-select[multiple] option {
+      padding: 4px 8px;
+      border-radius: 3px;
+      margin-bottom: 1px;
+    }
+
+    .ap-select[multiple] option:checked {
+      background: var(--verde);
+      color: var(--blanco);
+    }
+
+    .ap-canal-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,.3);
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    .ap-partido-form {
+      padding: 0 16px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      margin-top: 10px; padding-top: 12px;
+    }
+
+    .ap-btn-danger {
+      width: 100%; padding: 10px;
+      background: rgba(192,57,43,.2);
+      border: 1px solid rgba(192,57,43,.4);
+      color: #e57373; border-radius: var(--radius-xs);
+      font-family: var(--font-cond);
+      font-size: 14px; font-weight: 700; letter-spacing: .5px;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px; transition: all var(--trans);
+    }
+
+    .ap-btn-danger:hover { background: rgba(192,57,43,.4); border-color: rgba(192,57,43,.7); color: #ff8a80; }
+
+    .modo-imagen .score {
+      border-color: rgba(10,92,54,.25) !important;
+      background: var(--blanco) !important;
+      color: var(--verde) !important;
+      box-shadow: none !important; outline: none !important;
+      caret-color: transparent !important;
+    }
+
+    .modo-imagen .partido:nth-child(odd) { background: #fafcfb !important; }
+    .modo-imagen .partido { animation: none !important; }
+
+    @media (max-width: 520px) {
+      body { padding: 12px 8px 90px; }
+      .q-header { gap: 8px; padding: 12px 12px; }
+      #tituloJornada { font-size: 22px; }
+      .q-logo-wrap img, .q-logo-fallback { width: 48px; height: 48px; }
+      .equipo img { width: 52px; height: 52px; }
+      .equipo-fallback { width: 52px; height: 52px; }
+      .equipo-nombre { font-size: 10px; }
+      .score { width: 44px; height: 44px; font-size: 26px; }
+      .acciones { flex-direction: column; }
+      .admin-panel { right: 8px; left: 8px; width: auto; bottom: 88px; max-height: 70vh; }
+      #nombreJugador { font-size: 13px; max-width: 88px; }
+      .p-bar-canal-label { font-size: 10px; }
+      .p-bar-canal-item img { height: 14px; }
+    }
+
+    @media (max-width: 360px) {
+      .score { width: 38px; height: 38px; font-size: 22px; }
+      .equipo img { width: 42px; height: 42px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-overlay"></div>
+    <div class="modal-box">
+      <div class="modal-logo">
+        <div class="modal-badge">⚽</div>
+      </div>
+      <h2 id="modal-titulo">
+        <span class="modal-title-line1">QUINIELA</span>
+        <span class="modal-title-line2">MUNDIAL 2026</span>
+        <span class="modal-title-season">Fase de Grupos</span>
+      </h2>
+      <p class="modal-subtitle">Ingresa tu nombre para comenzar</p>
+      <div class="modal-input-wrap">
+        <div class="input-icon">👤</div>
+        <input type="text" id="inputNombre" placeholder="Tu nombre aquí…" maxlength="30" autocomplete="off" spellcheck="false">
+      </div>
+      <button id="btnContinuar" class="btn-primary">
+        <span>COMENZAR</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p class="modal-hint">¿Admin? Ingresa <strong>omar</strong></p>
+    </div>
+  </div>
+
+  <button id="btnAbrirAdmin" class="admin-fab" style="display:none;" title="Panel administrador"
+    onclick="togglePanelAdmin()" aria-label="Abrir panel de administrador">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <div id="adminPanel" class="admin-panel" style="display:none;" aria-hidden="true">
+    <div class="ap-header">
+      <div class="ap-header-icon">⚙️</div>
+      <div class="ap-header-text">
+        <h3>Panel Admin</h3>
+        <span>Mundial 2026 · 72 partidos</span>
+      </div>
+      <button class="ap-close" title="Cerrar" onclick="togglePanelAdmin()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="ap-body">
+      <div class="ap-section">
+        <label class="ap-label">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Título de la jornada
+        </label>
+        <div class="ap-input-row">
+          <input type="text" id="adminTitulo" class="ap-input" placeholder="MUNDIAL 2026">
+          <button class="ap-btn-icon" onclick="guardarTitulo()" title="Aplicar">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="ap-divider"></div>
+      <div class="ap-section">
+        <label class="ap-label">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Editar partido
+        </label>
+        <select id="adminPartidoSel" class="ap-select" onchange="cargarPartidoEnPanel()">
+          <option value="">— Selecciona partido —</option>
+        </select>
+      </div>
+      <div id="adminPartidoForm" class="ap-partido-form" style="display:none;">
+        <div class="ap-form-grid">
+          <div class="ap-form-col">
+            <label class="ap-label">Fecha</label>
+            <input type="date" id="apFecha" class="ap-input" onchange="aplicarCampoPartido()">
+          </div>
+          <div class="ap-form-col">
+            <label class="ap-label">Hora</label>
+            <input type="time" id="apHora" class="ap-input" onchange="aplicarCampoPartido()">
+          </div>
+        </div>
+        <label class="ap-label">Equipo Local</label>
+        <select id="apLocal" class="ap-select" onchange="aplicarCampoPartido()"></select>
+        <label class="ap-label">Equipo Visitante</label>
+        <select id="apVisita" class="ap-select" onchange="aplicarCampoPartido()"></select>
+        <label class="ap-label">Canales (selección múltiple)</label>
+        <select id="apCanales" class="ap-select" multiple onchange="aplicarCampoPartido()"></select>
+        <p class="ap-canal-hint">Mantén Ctrl/Cmd para seleccionar varios</p>
+      </div>
+      <div class="ap-divider"></div>
+      <div class="ap-section ap-danger-section">
+        <label class="ap-label ap-label-danger">Zona de peligro</label>
+        <button class="ap-btn-danger" onclick="resetearTodo()">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Resetear todo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="quiniela" id="quiniela">
+      <header class="q-header">
+        <div class="q-header-bg"></div>
+        <div class="q-col-left">
+          <div class="q-logo-wrap">
+            <img src="assets/animales.png" alt="Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="q-logo-fallback" style="display:none;">🌍</div>
+          </div>
+        </div>
+        <div class="q-col-center">
+          <p class="q-season">TORNEO 2026</p>
+          <h1 id="tituloJornada">MUNDIAL 2026</h1>
+          <p class="q-subtitle">Fase de Grupos</p>
+          <div class="q-title-accent"></div>
+        </div>
+        <div class="q-col-right">
+          <span class="q-jugador-label">Quiniela de</span>
+          <strong id="nombreJugador">—</strong>
+        </div>
+      </header>
+      <div class="q-stripe"></div>
+      <div id="contenedor-partidos" class="partidos-grid"></div>
+      <footer class="q-footer">
+        <span>⚽ MUNDIAL 2026 · 72 PARTIDOS</span>
+      </footer>
+    </div>
+
+    <div class="acciones" id="acciones">
+      <button id="btnGuardar" class="btn-accion btn-guardar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Guardar PNG</span>
+      </button>
+      <button id="btnCompartir" class="btn-accion btn-compartir" style="display:none;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+        <span>Compartir</span>
+      </button>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <script>
+  'use strict';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtZpRO-Gy59prAeKjpaAs_p-qqxuM9jMo",
+    authDomain: "quiniela-3c8fa.firebaseapp.com",
+    projectId: "quiniela-3c8fa",
+    storageBucket: "quiniela-3c8fa.firebasestorage.app",
+    messagingSenderId: "321094792504",
+    appId: "1:321094792504:web:532ba43015d1557a7cfdcd"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  /* ══════════════════════════════════════════════════════
+     1. DATOS
+  ══════════════════════════════════════════════════════ */
+
+  const EQUIPOS = [
+    { id: 'alemania',         nombre: 'Alemania'          },
+    { id: 'arabia_saudita',   nombre: 'Arabia Saudita'    },
+    { id: 'argelia',          nombre: 'Argelia'           },
+    { id: 'argentina',        nombre: 'Argentina'         },
+    { id: 'australia',        nombre: 'Australia'         },
+    { id: 'austria',          nombre: 'Austria'           },
+    { id: 'belgica',          nombre: 'Bélgica'           },
+    { id: 'bosnia',           nombre: 'Bosnia'            },
+    { id: 'brasil',           nombre: 'Brasil'            },
+    { id: 'cabo_verde',       nombre: 'Cabo Verde'        },
+    { id: 'canada',           nombre: 'Canadá'            },
+    { id: 'corea_del_sur',    nombre: 'Corea del Sur'     },
+    { id: 'colombia',         nombre: 'Colombia'          },
+    { id: 'costa_de_marfil',  nombre: 'Costa de Marfil'  },
+    { id: 'croacia',          nombre: 'Croacia'           },
+    { id: 'curazao',          nombre: 'Curazao'           },
+    { id: 'ecuador',          nombre: 'Ecuador'           },
+    { id: 'egipto',           nombre: 'Egipto'            },
+    { id: 'escocia',          nombre: 'Escocia'           },
+    { id: 'espana',           nombre: 'España'            },
+    { id: 'usa',              nombre: 'Estados Unidos'    },
+    { id: 'francia',          nombre: 'Francia'           },
+    { id: 'ghana',            nombre: 'Ghana'             },
+    { id: 'haiti',            nombre: 'Haití'             },
+    { id: 'inglaterra',       nombre: 'Inglaterra'        },
+    { id: 'iran',             nombre: 'Irán'              },
+    { id: 'iraq',             nombre: 'Iraq'              },
+    { id: 'japon',            nombre: 'Japón'             },
+    { id: 'jordania',         nombre: 'Jordania'          },
+    { id: 'marruecos',        nombre: 'Marruecos'         },
+    { id: 'mexico',           nombre: 'México'            },
+    { id: 'noruega',          nombre: 'Noruega'           },
+    { id: 'nueva_zelanda',    nombre: 'Nueva Zelanda'     },
+    { id: 'paises_bajos',     nombre: 'Países Bajos'      },
+    { id: 'panama',           nombre: 'Panamá'            },
+    { id: 'paraguay',         nombre: 'Paraguay'          },
+    { id: 'portugal',         nombre: 'Portugal'          },
+    { id: 'qatar',            nombre: 'Qatar'             },
+    { id: 'rd_congo',         nombre: 'RD Congo'          },
+    { id: 'republica_checa',  nombre: 'Rep. Checa'        },
+    { id: 'senegal',          nombre: 'Senegal'           },
+    { id: 'sudafrica',        nombre: 'Sudáfrica'         },
+    { id: 'suecia',           nombre: 'Suecia'            },
+    { id: 'suiza',            nombre: 'Suiza'             },
+    { id: 'tunez',            nombre: 'Túnez'             },
+    { id: 'turquia',          nombre: 'Turquía'           },
+    { id: 'uruguay',          nombre: 'Uruguay'           },
+    { id: 'uzbekistan',       nombre: 'Uzbekistán'        },
+    { id: 'albania',          nombre: 'Albania'           },
+    { id: 'camerun',          nombre: 'Camerún'           },
+    { id: 'chile',            nombre: 'Chile'             },
+    { id: 'china',            nombre: 'China'             },
+    { id: 'cuba',             nombre: 'Cuba'              },
+    { id: 'dinamarca',        nombre: 'Dinamarca'         },
+    { id: 'hungria',          nombre: 'Hungría'           },
+    { id: 'mali',             nombre: 'Mali'              },
+    { id: 'nigeria',          nombre: 'Nigeria'           },
+    { id: 'peru',             nombre: 'Perú'              },
+    { id: 'rumania',          nombre: 'Rumanía'           },
+    { id: 'serbia',           nombre: 'Serbia'            },
+    { id: 'venezuela',        nombre: 'Venezuela'         },
+    { id: 'zambia',           nombre: 'Zambia'            },
+  ];
+
+  const CANALES = [
+    { id: 'televisa',  nombre: 'Televisa'     },
+    { id: 'azteca',    nombre: 'TV Azteca'    },
+    { id: 'vix',       nombre: 'ViX+'         },
+    { id: 'tudn',      nombre: 'TUDN'         },
+    { id: 'fox',       nombre: 'FOX Sports'   },
+    { id: 'espn',      nombre: 'ESPN'         },
+    { id: 'claro',     nombre: 'Claro Sports' },
+    { id: 'canal5',    nombre: 'Canal 5'      },
+    { id: 'amazon',    nombre: 'Amazon Prime' },
+    { id: 'telemundo', nombre: 'Telemundo'    },
+  ];
+
+  /* ══════════════════════════════════════════════════════
+     72 PARTIDOS — FASE DE GRUPOS MUNDIAL 2026
+     Con canales[] (array)
+  ══════════════════════════════════════════════════════ */
+  function generarPartidosDefault() {
+    return [
+      // Grupo A
+      { local: 'mexico',        visita: 'sudafrica',       fecha: '2026-06-11', hora: '13:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'corea_del_sur', visita: 'republica_checa', fecha: '2026-06-11', hora: '20:00', canales: ['vix'] },
+      { local: 'sudafrica',     visita: 'republica_checa', fecha: '2026-06-18', hora: '10:00', canales: ['vix'] },
+      { local: 'mexico',        visita: 'corea_del_sur',   fecha: '2026-06-18', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'mexico',        visita: 'republica_checa', fecha: '2026-06-24', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'corea_del_sur', visita: 'sudafrica',       fecha: '2026-06-24', hora: '19:00', canales: ['vix'] },
+
+      // Grupo B
+      { local: 'canada',        visita: 'bosnia',          fecha: '2026-06-12', hora: '13:00', canales: ['vix'] },
+      { local: 'qatar',         visita: 'suiza',           fecha: '2026-06-13', hora: '13:00', canales: ['vix'] },
+      { local: 'suiza',         visita: 'bosnia',          fecha: '2026-06-18', hora: '13:00', canales: ['vix'] },
+      { local: 'canada',        visita: 'qatar',           fecha: '2026-06-18', hora: '16:00', canales: ['vix'] },
+      { local: 'canada',        visita: 'suiza',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] },
+      { local: 'bosnia',        visita: 'qatar',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] },
+
+      // Grupo C
+      { local: 'brasil',        visita: 'marruecos',       fecha: '2026-06-13', hora: '16:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'haiti',         visita: 'escocia',         fecha: '2026-06-13', hora: '19:00', canales: ['vix'] },
+      { local: 'escocia',       visita: 'marruecos',       fecha: '2026-06-19', hora: '16:00', canales: ['vix'] },
+      { local: 'brasil',        visita: 'haiti',           fecha: '2026-06-19', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'brasil',        visita: 'escocia',         fecha: '2026-06-24', hora: '16:00', canales: ['vix'] },
+      { local: 'marruecos',     visita: 'haiti',           fecha: '2026-06-24', hora: '16:00', canales: ['vix'] },
+
+      // Grupo D
+      { local: 'usa',           visita: 'paraguay',        fecha: '2026-06-12', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'australia',     visita: 'turquia',         fecha: '2026-06-14', hora: '10:00', canales: ['vix'] },
+      { local: 'usa',           visita: 'australia',       fecha: '2026-06-19', hora: '13:00', canales: ['vix'] },
+      { local: 'paraguay',      visita: 'turquia',         fecha: '2026-06-20', hora: '10:00', canales: ['vix'] },
+      { local: 'usa',           visita: 'turquia',         fecha: '2026-06-25', hora: '20:00', canales: ['vix'] },
+      { local: 'australia',     visita: 'paraguay',        fecha: '2026-06-25', hora: '20:00', canales: ['vix'] },
+
+      // Grupo E
+      { local: 'alemania',      visita: 'curazao',         fecha: '2026-06-14', hora: '11:00', canales: ['vix'] },
+      { local: 'ecuador',       visita: 'costa_de_marfil', fecha: '2026-06-14', hora: '17:00', canales: ['vix'] },
+      { local: 'alemania',      visita: 'costa_de_marfil', fecha: '2026-06-20', hora: '14:00', canales: ['vix'] },
+      { local: 'ecuador',       visita: 'curazao',         fecha: '2026-06-20', hora: '18:00', canales: ['vix'] },
+      { local: 'ecuador',       visita: 'alemania',        fecha: '2026-06-25', hora: '14:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'curazao',       visita: 'costa_de_marfil', fecha: '2026-06-25', hora: '14:00', canales: ['vix'] },
+
+      // Grupo F
+      { local: 'paises_bajos',  visita: 'japon',           fecha: '2026-06-14', hora: '14:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'suecia',        visita: 'tunez',           fecha: '2026-06-14', hora: '20:00', canales: ['vix'] },
+      { local: 'paises_bajos',  visita: 'suecia',          fecha: '2026-06-20', hora: '11:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'tunez',         visita: 'japon',           fecha: '2026-06-21', hora: '10:00', canales: ['vix'] },
+      { local: 'paises_bajos',  visita: 'tunez',           fecha: '2026-06-25', hora: '17:00', canales: ['vix'] },
+      { local: 'japon',         visita: 'suecia',          fecha: '2026-06-25', hora: '17:00', canales: ['vix'] },
+
+      // Grupo G
+      { local: 'belgica',       visita: 'egipto',          fecha: '2026-06-15', hora: '13:00', canales: ['vix'] },
+      { local: 'iran',          visita: 'nueva_zelanda',   fecha: '2026-06-15', hora: '19:00', canales: ['vix'] },
+      { local: 'belgica',       visita: 'iran',            fecha: '2026-06-21', hora: '13:00', canales: ['vix'] },
+      { local: 'nueva_zelanda', visita: 'egipto',          fecha: '2026-06-21', hora: '19:00', canales: ['vix'] },
+      { local: 'belgica',       visita: 'nueva_zelanda',   fecha: '2026-06-27', hora: '21:00', canales: ['vix'] },
+      { local: 'egipto',        visita: 'iran',            fecha: '2026-06-27', hora: '21:00', canales: ['vix'] },
+
+      // Grupo H
+      { local: 'espana',        visita: 'cabo_verde',      fecha: '2026-06-15', hora: '10:00', canales: ['vix'] },
+      { local: 'arabia_saudita',visita: 'uruguay',         fecha: '2026-06-15', hora: '16:00', canales: ['vix'] },
+      { local: 'espana',        visita: 'arabia_saudita',  fecha: '2026-06-21', hora: '10:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'uruguay',       visita: 'cabo_verde',      fecha: '2026-06-21', hora: '16:00', canales: ['vix'] },
+      { local: 'espana',        visita: 'uruguay',         fecha: '2026-06-26', hora: '18:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'cabo_verde',    visita: 'arabia_saudita',  fecha: '2026-06-26', hora: '18:00', canales: ['vix'] },
+
+      // Grupo I
+      { local: 'francia',       visita: 'senegal',         fecha: '2026-06-16', hora: '13:00', canales: ['vix'] },
+      { local: 'iraq',          visita: 'noruega',         fecha: '2026-06-16', hora: '16:00', canales: ['vix'] },
+      { local: 'francia',       visita: 'iraq',            fecha: '2026-06-22', hora: '15:00', canales: ['vix'] },
+      { local: 'noruega',       visita: 'senegal',         fecha: '2026-06-22', hora: '18:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'francia',       visita: 'noruega',         fecha: '2026-06-26', hora: '13:00', canales: ['vix'] },
+      { local: 'senegal',       visita: 'iraq',            fecha: '2026-06-26', hora: '13:00', canales: ['vix'] },
+
+      // Grupo J
+      { local: 'argentina',     visita: 'argelia',         fecha: '2026-06-16', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'austria',       visita: 'jordania',        fecha: '2026-06-17', hora: '22:00', canales: ['vix'] },
+      { local: 'argentina',     visita: 'austria',         fecha: '2026-06-22', hora: '11:00', canales: ['vix'] },
+      { local: 'argelia',       visita: 'jordania',        fecha: '2026-06-23', hora: '21:00', canales: ['vix'] },
+      { local: 'argentina',     visita: 'jordania',        fecha: '2026-06-27', hora: '20:00', canales: ['vix'] },
+      { local: 'argelia',       visita: 'austria',         fecha: '2026-06-27', hora: '20:00', canales: ['vix'] },
+
+      // Grupo K
+      { local: 'portugal',      visita: 'rd_congo',        fecha: '2026-06-17', hora: '11:00', canales: ['vix'] },
+      { local: 'uzbekistan',    visita: 'colombia',        fecha: '2026-06-17', hora: '20:00', canales: ['vix'] },
+      { local: 'portugal',      visita: 'uzbekistan',      fecha: '2026-06-23', hora: '11:00', canales: ['vix'] },
+      { local: 'colombia',      visita: 'rd_congo',        fecha: '2026-06-23', hora: '20:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'portugal',      visita: 'colombia',        fecha: '2026-06-27', hora: '17:30', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'rd_congo',      visita: 'uzbekistan',      fecha: '2026-06-27', hora: '17:30', canales: ['vix'] },
+
+      // Grupo L
+      { local: 'inglaterra',    visita: 'croacia',         fecha: '2026-06-17', hora: '14:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'ghana',         visita: 'panama',          fecha: '2026-06-17', hora: '17:00', canales: ['vix'] },
+      { local: 'inglaterra',    visita: 'ghana',           fecha: '2026-06-23', hora: '14:00', canales: ['vix'] },
+      { local: 'panama',        visita: 'croacia',         fecha: '2026-06-23', hora: '17:00', canales: ['vix'] },
+      { local: 'inglaterra',    visita: 'panama',          fecha: '2026-06-27', hora: '15:00', canales: ['televisa', 'azteca', 'vix'] },
+      { local: 'croacia',       visita: 'ghana',           fecha: '2026-06-27', hora: '15:00', canales: ['vix'] },
+    ];
+  }
+
+  const PARTIDOS_DEFAULT = generarPartidosDefault();
+  const LS_KEY = 'quiniela_mundial_v2_72';
+
+  /* ══ 2. ESTADO ══ */
+  let isAdmin      = false;
+  let panelAbierto = false;
+
+  /* ══ 3. UTILIDADES ══ */
+  const logoEquipo   = id => `assets/equipos/${id}.jpeg`;
+  const logoCanal    = id => `assets/canales/${id}.png`;
+  const nombreEquipo = id => (EQUIPOS.find(e => e.id === id) || {}).nombre || id;
+  const nombreCanal  = id => (CANALES.find(c => c.id === id) || {}).nombre || id.toUpperCase();
+
+  /**
+   * Normaliza el campo de canales:
+   * Acepta string (legado) o array y devuelve siempre un array.
+   */
+  function normalizarCanales(canales) {
+    if (!canales) return ['vix'];
+    if (Array.isArray(canales)) return canales.length ? canales : ['vix'];
+    if (typeof canales === 'string') return [canales];
+    return ['vix'];
+  }
+
+  function shortEquipo(id) {
+    const e = EQUIPOS.find(e => e.id === id);
+    if (!e) return id.slice(0,3).toUpperCase();
+    return e.nombre.slice(0,3).toUpperCase();
+  }
+
+  function formatFecha(iso) {
+    if (!iso) return 'Por definir';
+    const d = new Date(iso + 'T12:00:00');
+    return d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' })
+            .replace(/\./g,'').toUpperCase();
+  }
+
+  const formatHora = t => t ? t + ' h' : 'Por def.';
+
+  function toast(msg, dur = 2800) {
+    const el = document.getElementById('toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), dur);
+  }
+
+  /**
+   * Construye el HTML para la zona de canales en la barra de info.
+   * Muestra logo + nombre de cada canal separados por un punto.
+   */
+  function buildCanalesHTML(canales) {
+    const arr = normalizarCanales(canales);
+    return arr.map((cid, idx) => {
+      const nom = nombreCanal(cid);
+      const sep = idx < arr.length - 1
+        ? '<span class="p-bar-canal-sep"></span>'
+        : '';
+      return `
+        <span class="p-bar-canal-item">
+          <img src="${logoCanal(cid)}" alt="${nom}" onerror="this.style.display='none';">
+          <span class="p-bar-canal-label">${nom}</span>
+        </span>${sep}`;
+    }).join('');
+  }
+
+  /* ══ 4. FIREBASE PERSISTENCIA ══ */
+  async function cargarDatosAdmin() {
+    try {
+      const doc = await db.collection('quiniela').doc('config').get();
+      return doc.exists ? doc.data() : null;
+    } catch(e) {
+      console.log('Sin Firebase, usando defaults');
+      return null;
+    }
+  }
+
+  async function guardarDatosAdmin(data) {
+    try {
+      await db.collection('quiniela').doc('config').set(data);
+      toast('✅ Cambios guardados (visibles para todos)');
+    } catch(e) {
+      console.error(e);
+      toast('❌ Error al guardar en la nube');
+    }
+  }
+
+  function obtenerEstadoActual() {
+    const partidos = Array.from(document.querySelectorAll('.partido')).map(p => ({
+      local:   p.dataset.local,
+      visita:  p.dataset.visita,
+      canales: JSON.parse(p.dataset.canales || '["vix"]'),
+      fecha:   p.dataset.fecha,
+      hora:    p.dataset.hora,
+    }));
+    return {
+      titulo: document.getElementById('tituloJornada').textContent.trim(),
+      partidos,
+    };
+  }
+
+  /* ══ 5. RENDER PARTIDOS ══ */
+  function renderPartidos(datos) {
+    const cont = document.getElementById('contenedor-partidos');
+    cont.innerHTML = '';
+
+    datos.forEach((p, i) => {
+      const nomLocal  = nombreEquipo(p.local);
+      const nomVisita = nombreEquipo(p.visita);
+      const canales   = normalizarCanales(p.canales);
+
+      const div = document.createElement('div');
+      div.className      = 'partido';
+      div.dataset.idx    = i;
+      div.dataset.local  = p.local;
+      div.dataset.visita = p.visita;
+      div.dataset.canales = JSON.stringify(canales);
+      div.dataset.fecha  = p.fecha  || '';
+      div.dataset.hora   = p.hora   || '';
+
+      div.innerHTML = `
+        <span class="partido-num">${i + 1}</span>
+        <div class="fila-partido">
+          <div class="equipo equipo-local">
+            <img src="${logoEquipo(p.local)}" alt="${nomLocal}" title="${nomLocal}"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="equipo-fallback" style="display:none;">${shortEquipo(p.local)}</div>
+            <span class="equipo-nombre">${nomLocal}</span>
+          </div>
+          <div class="score-zone">
+            <div class="score-wrap">
+              <div class="score" contenteditable="true" inputmode="numeric" role="spinbutton"
+                aria-label="Goles ${nomLocal} partido ${i+1}" data-partido="${i}" data-tipo="local">0</div>
+            </div>
+            <div class="score-divider">
+              <div class="score-divider-dash"></div>
+              <span class="vs-text">VS</span>
+              <div class="score-divider-dash"></div>
+            </div>
+            <div class="score-wrap">
+              <div class="score" contenteditable="true" inputmode="numeric" role="spinbutton"
+                aria-label="Goles ${nomVisita} partido ${i+1}" data-partido="${i}" data-tipo="visita">0</div>
+            </div>
+          </div>
+          <div class="equipo equipo-visita">
+            <img src="${logoEquipo(p.visita)}" alt="${nomVisita}" title="${nomVisita}"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="equipo-fallback" style="display:none;">${shortEquipo(p.visita)}</div>
+            <span class="equipo-nombre">${nomVisita}</span>
+          </div>
+        </div>
+        <div class="p-info-bar">
+          <span class="p-bar-fecha">${formatFecha(p.fecha)}</span>
+          <div class="p-bar-canales">
+            ${buildCanalesHTML(canales)}
+          </div>
+          <span class="p-bar-hora">${formatHora(p.hora)}</span>
+        </div>
+      `;
+
+      cont.appendChild(div);
+    });
+
+    activarEventosScore();
+  }
+
+  /* ══ 6. EVENTOS SCORES ══ */
+  function activarEventosScore() {
+    document.querySelectorAll('.score').forEach(score => {
+      score.addEventListener('input', () => {
+        const limpio = score.textContent.replace(/\D/g,'').slice(0,2);
+        if (score.textContent !== limpio) {
+          score.textContent = limpio || '0';
+          moverCursorAlFinal(score);
+        }
+      });
+      score.addEventListener('focus', () => { if (score.textContent === '0') score.textContent = ''; });
+      score.addEventListener('blur',  () => { if (!score.textContent.trim()) score.textContent = '0'; });
+      score.addEventListener('keydown', e => {
+        const ok = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'];
+        if (!ok.includes(e.key) && !/^\d$/.test(e.key)) e.preventDefault();
+        if (e.key === 'Enter') { e.preventDefault(); score.blur(); }
+      });
+      score.addEventListener('paste', e => {
+        e.preventDefault();
+        const txt = (e.clipboardData || window.clipboardData).getData('text');
+        document.execCommand('insertText', false, txt.replace(/\D/g,'').slice(0,2));
+      });
+    });
+  }
+
+  function moverCursorAlFinal(el) {
+    if (!el.textContent.length) return;
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  /* ══ 7. MODAL LOGIN ══ */
+  const modal       = document.getElementById('modal');
+  const inputNombre = document.getElementById('inputNombre');
+
+  inputNombre.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btnContinuar').click(); });
+  inputNombre.addEventListener('input',   () => { inputNombre.style.borderColor = ''; });
+
+  document.getElementById('btnContinuar').addEventListener('click', () => {
+    const nombre = inputNombre.value.trim();
+    if (!nombre) {
+      inputNombre.style.borderColor = '#c0392b';
+      inputNombre.focus();
+      toast('⚠️ Por favor ingresa tu nombre');
+      return;
+    }
+    document.getElementById('nombreJugador').textContent = nombre.toUpperCase();
+    modal.style.display = 'none';
+
+    if (nombre.toLowerCase() === 'omar') {
+      setTimeout(() => {
+        const pass = prompt('🔐 Contraseña de administrador:');
+        if (pass === 'admin_omar') {
+          activarAdmin();
+        } else if (pass !== null) {
+          toast('❌ Contraseña incorrecta');
+        }
+      }, 200);
+    }
+  });
+
+  /* ══ 8. ADMIN ══ */
+  function activarAdmin() {
+    isAdmin = true;
+    document.body.classList.add('admin');
+    document.getElementById('btnAbrirAdmin').style.display = 'flex';
+    llenarSelectorPartidos();
+    llenarSelectorEquipos();
+    llenarSelectorCanales();
+    toast('✅ Modo administrador activado');
+  }
+
+  function togglePanelAdmin() {
+    const panel = document.getElementById('adminPanel');
+    if (panelAbierto) {
+      panel.style.display = 'none';
+      panel.setAttribute('aria-hidden','true');
+      panelAbierto = false;
+    } else {
+      panel.style.display = 'flex';
+      panel.setAttribute('aria-hidden','false');
+      void panel.offsetWidth;
+      panel.style.animation = 'none';
+      void panel.offsetWidth;
+      panel.style.animation = '';
+      panelAbierto = true;
+    }
+  }
+
+  window.togglePanelAdmin = togglePanelAdmin;
+
+  function llenarSelectorPartidos() {
+    const sel = document.getElementById('adminPartidoSel');
+    sel.innerHTML = '<option value="">— Selecciona partido —</option>';
+    const partidos = document.querySelectorAll('.partido');
+    partidos.forEach((p, i) => {
+      const loc = nombreEquipo(p.dataset.local);
+      const vis = nombreEquipo(p.dataset.visita);
+      const opt = document.createElement('option');
+      opt.value       = i;
+      opt.textContent = `${i+1}. ${loc} vs ${vis}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  function llenarSelectorEquipos() {
+    ['apLocal','apVisita'].forEach(id => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      sel.innerHTML = '';
+      [...EQUIPOS].sort((a,b) => a.nombre.localeCompare(b.nombre)).forEach(e => {
+        const opt = document.createElement('option');
+        opt.value       = e.id;
+        opt.textContent = e.nombre;
+        sel.appendChild(opt);
+      });
+    });
+  }
+
+  function llenarSelectorCanales() {
+    const sel = document.getElementById('apCanales');
+    if (!sel) return;
+    sel.innerHTML = '';
+    CANALES.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value       = c.id;
+      opt.textContent = c.nombre;
+      sel.appendChild(opt);
+    });
+  }
+
+  function cargarPartidoEnPanel() {
+    const idx  = document.getElementById('adminPartidoSel').value;
+    const form = document.getElementById('adminPartidoForm');
+    if (idx === '') { form.style.display = 'none'; return; }
+    form.style.display = 'block';
+    const partido = document.querySelectorAll('.partido')[parseInt(idx)];
+    if (!partido) return;
+
+    document.getElementById('apFecha').value  = partido.dataset.fecha  || '';
+    document.getElementById('apHora').value   = partido.dataset.hora   || '';
+    document.getElementById('apLocal').value  = partido.dataset.local  || '';
+    document.getElementById('apVisita').value = partido.dataset.visita || '';
+
+    // Marcar los canales activos en el multi-select
+    const canalesActivos = normalizarCanales(JSON.parse(partido.dataset.canales || '["vix"]'));
+    const selCanales = document.getElementById('apCanales');
+    Array.from(selCanales.options).forEach(opt => {
+      opt.selected = canalesActivos.includes(opt.value);
+    });
+  }
+
+  window.cargarPartidoEnPanel = cargarPartidoEnPanel;
+
+  function aplicarCampoPartido() {
+    const idx = parseInt(document.getElementById('adminPartidoSel').value);
+    if (isNaN(idx)) return;
+    const partido = document.querySelectorAll('.partido')[idx];
+    if (!partido) return;
+
+    const fecha   = document.getElementById('apFecha').value;
+    const hora    = document.getElementById('apHora').value;
+    const local   = document.getElementById('apLocal').value;
+    const visita  = document.getElementById('apVisita').value;
+
+    // Leer canales seleccionados del multi-select
+    const selCanales = document.getElementById('apCanales');
+    const canales = Array.from(selCanales.selectedOptions).map(o => o.value);
+    const canalesFinal = canales.length ? canales : ['vix'];
+
+    const scores  = partido.querySelectorAll('.score');
+    const sLocal  = scores[0]?.textContent || '0';
+    const sVisita = scores[1]?.textContent || '0';
+
+    partido.dataset.fecha   = fecha;
+    partido.dataset.hora    = hora;
+    partido.dataset.local   = local;
+    partido.dataset.visita  = visita;
+    partido.dataset.canales = JSON.stringify(canalesFinal);
+
+    const barFecha   = partido.querySelector('.p-bar-fecha');
+    const barHora    = partido.querySelector('.p-bar-hora');
+    const barCanales = partido.querySelector('.p-bar-canales');
+
+    if (barFecha)   barFecha.textContent   = formatFecha(fecha);
+    if (barHora)    barHora.textContent    = formatHora(hora);
+    if (barCanales) barCanales.innerHTML   = buildCanalesHTML(canalesFinal);
+
+    const localImg   = partido.querySelector('.equipo-local  img');
+    const visitaImg  = partido.querySelector('.equipo-visita img');
+    const localFall  = partido.querySelector('.equipo-local  .equipo-fallback');
+    const visitaFall = partido.querySelector('.equipo-visita .equipo-fallback');
+    const localNom   = partido.querySelector('.equipo-local  .equipo-nombre');
+    const visitaNom  = partido.querySelector('.equipo-visita .equipo-nombre');
+
+    if (localImg)  { localImg.src  = logoEquipo(local);  localImg.alt  = nombreEquipo(local);  localImg.style.display='block';  if(localFall)  localFall.style.display='none'; }
+    if (visitaImg) { visitaImg.src = logoEquipo(visita); visitaImg.alt = nombreEquipo(visita); visitaImg.style.display='block'; if(visitaFall) visitaFall.style.display='none'; }
+    if (localNom)  localNom.textContent  = nombreEquipo(local);
+    if (visitaNom) visitaNom.textContent = nombreEquipo(visita);
+
+    const newScores = partido.querySelectorAll('.score');
+    if (newScores[0]) newScores[0].textContent = sLocal;
+    if (newScores[1]) newScores[1].textContent = sVisita;
+
+    llenarSelectorPartidos();
+    document.getElementById('adminPartidoSel').value = idx;
+
+    guardarDatosAdmin(obtenerEstadoActual());
+  }
+
+  window.aplicarCampoPartido = aplicarCampoPartido;
+
+  function guardarTitulo() {
+    const val = document.getElementById('adminTitulo').value.trim();
+    if (!val) { toast('⚠️ Escribe un título primero'); return; }
+    document.getElementById('tituloJornada').textContent = val.toUpperCase();
+    guardarDatosAdmin(obtenerEstadoActual());
+    toast('✅ Título actualizado');
+  }
+
+  window.guardarTitulo = guardarTitulo;
+
+  function resetearTodo() {
+    if (!confirm('¿Seguro que deseas resetear todos los partidos al estado original?\n\nEsta acción no se puede deshacer.')) return;
+    localStorage.removeItem(LS_KEY);
+    toast('🔄 Reseteando…');
+    setTimeout(() => location.reload(), 600);
+  }
+
+  window.resetearTodo = resetearTodo;
+
+  /* ══ 9. EXPORTAR PNG ══ */
+  document.getElementById('btnGuardar').addEventListener('click', exportarPNG);
+
+  async function exportarPNG() {
+    const quiniela = document.getElementById('quiniela');
+    const btn = document.getElementById('btnGuardar');
+    const textoOriginal = btn.innerHTML;
+
+    btn.innerHTML = 'Guardando...';
+    btn.disabled  = true;
+    document.body.classList.add('modo-imagen');
+
+    const scores  = quiniela.querySelectorAll('.score');
+    const valores = Array.from(scores).map(s => s.textContent);
+
+    try {
+      scores.forEach(s => { s.contentEditable = false; s.style.pointerEvents = 'none'; });
+      if (panelAbierto) togglePanelAdmin();
+      await new Promise(r => setTimeout(r, 150));
+
+      const canvas = await html2canvas(quiniela, { scale: 3, useCORS: true, backgroundColor: '#ffffff' });
+      const link   = document.createElement('a');
+      const nombre = document.getElementById('nombreJugador').textContent.trim() || 'jugador';
+      link.download = `quiniela-mundial-${nombre.toLowerCase()}.png`;
+      link.href     = canvas.toDataURL('image/png');
+      link.click();
+      toast('✅ Imagen descargada correctamente');
+    } catch(err) {
+      console.error(err);
+      toast('❌ Error al guardar imagen');
+    } finally {
+      scores.forEach((s,i) => { s.contentEditable = true; s.textContent = valores[i]; s.style.pointerEvents = ''; });
+      document.body.classList.remove('modo-imagen');
+      btn.innerHTML = textoOriginal;
+      btn.disabled  = false;
+    }
+  }
+
+  /* ══ 10. COMPARTIR ══ */
+  const btnCompartir = document.getElementById('btnCompartir');
+
+  if (navigator.share) {
+    btnCompartir.style.display = 'flex';
+    btnCompartir.addEventListener('click', async () => {
+      const quiniela = document.getElementById('quiniela');
+      const nombre   = document.getElementById('nombreJugador').textContent.trim() || 'Jugador';
+
+      document.body.classList.add('modo-imagen');
+      if (panelAbierto) togglePanelAdmin();
+
+      try {
+        await new Promise(r => setTimeout(r, 150));
+        const canvas = await html2canvas(quiniela, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const blob   = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        const file   = new File([blob], `quiniela-${nombre.toLowerCase()}.png`, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ title: 'Mi Quiniela Mundial 2026', text: `⚽ Quiniela de ${nombre} - Mundial 2026`, files: [file] });
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a   = document.createElement('a');
+          a.href = url; a.download = file.name;
+          document.body.appendChild(a); a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast('✅ Imagen descargada. Comparte desde Galería/Fotos');
+        }
+      } catch(err) {
+        console.error(err);
+        toast('❌ Error al compartir');
+      } finally {
+        document.body.classList.remove('modo-imagen');
+      }
+    });
+  }
+
+  /* ══ 11. INICIALIZACIÓN ══ */
+  async function init() {
+    const guardado = await cargarDatosAdmin();
+
+    let partidos = PARTIDOS_DEFAULT;
+    let titulo   = 'MUNDIAL 2026';
+
+    if (guardado) {
+      if (Array.isArray(guardado.partidos) && guardado.partidos.length === 72) {
+        // Migrar partidos legados que usen 'canal' en lugar de 'canales'
+        partidos = guardado.partidos.map(p => ({
+          ...p,
+          canales: normalizarCanales(p.canales || p.canal),
+        }));
+      }
+      if (guardado.titulo) titulo = guardado.titulo;
+    }
+
+    document.getElementById('tituloJornada').textContent = titulo;
+    renderPartidos(partidos);
+
+    modal.style.display = 'flex';
+    setTimeout(() => inputNombre.focus(), 150);
+  }
+
+  init();
+  </script>
+
+</body>
+</html>
