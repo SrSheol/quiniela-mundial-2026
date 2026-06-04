@@ -398,7 +398,6 @@
       color: #ccc; letter-spacing: 1.5px;
     }
 
-    /* ── Info bar con soporte multi-canal ── */
     .p-info-bar {
       display: flex; align-items: center;
       justify-content: space-between;
@@ -423,14 +422,12 @@
       white-space: nowrap; position: relative;
     }
 
-    /* Contenedor de múltiples canales */
     .p-bar-canales {
       display: flex; align-items: center;
       gap: 6px; position: relative;
       flex-wrap: nowrap;
     }
 
-    /* Separador entre canales */
     .p-bar-canal-sep {
       width: 3px; height: 3px;
       border-radius: 50%;
@@ -438,7 +435,6 @@
       flex-shrink: 0;
     }
 
-    /* Un canal individual */
     .p-bar-canal-item {
       display: flex; align-items: center;
       gap: 3px;
@@ -642,7 +638,6 @@
     .ap-input::placeholder { color: rgba(255,255,255,.25); }
     .ap-select option { background: #111d17; color: var(--blanco); }
 
-    /* Multi-select canales en admin */
     .ap-select[multiple] {
       height: 90px;
       padding: 4px;
@@ -685,6 +680,7 @@
 
     .ap-btn-danger:hover { background: rgba(192,57,43,.4); border-color: rgba(192,57,43,.7); color: #ff8a80; }
 
+    /* ── Modo imagen: limpia estilos focus/hover para captura limpia ── */
     .modo-imagen .score {
       border-color: rgba(10,92,54,.25) !important;
       background: var(--blanco) !important;
@@ -695,6 +691,22 @@
 
     .modo-imagen .partido:nth-child(odd) { background: #fafcfb !important; }
     .modo-imagen .partido { animation: none !important; }
+
+    /* ── Spinner en botones durante captura ── */
+    .btn-accion.loading {
+      opacity: 0.75;
+      pointer-events: none;
+      cursor: wait;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .icon-spin {
+      display: inline-block;
+      animation: spin 0.7s linear infinite;
+    }
 
     @media (max-width: 520px) {
       body { padding: 12px 8px 90px; }
@@ -855,7 +867,7 @@
         </svg>
         <span>Guardar PNG</span>
       </button>
-      <button id="btnCompartir" class="btn-accion btn-compartir" style="display:none;">
+      <button id="btnCompartir" class="btn-accion btn-compartir">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
@@ -890,8 +902,9 @@
   /* ══════════════════════════════════════════════════════
      DETECCIÓN DE PLATAFORMA
   ══════════════════════════════════════════════════════ */
-  const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const IS_IOS     = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const IS_ANDROID = /Android/i.test(navigator.userAgent);
+  const IS_MOBILE  = IS_IOS || IS_ANDROID;
 
   /* ══════════════════════════════════════════════════════
      1. DATOS
@@ -977,107 +990,23 @@
 
   /* ══════════════════════════════════════════════════════
      72 PARTIDOS — FASE DE GRUPOS MUNDIAL 2026
-     Con canales[] (array)
   ══════════════════════════════════════════════════════ */
   function generarPartidosDefault() {
     return [
-      // Grupo A
       { local: 'mexico',        visita: 'sudafrica',       fecha: '2026-06-11', hora: '13:00', canales: ['televisa', 'azteca', 'vix'] },
       { local: 'corea_del_sur', visita: 'republica_checa', fecha: '2026-06-11', hora: '20:00', canales: ['vix'] },
       { local: 'sudafrica',     visita: 'republica_checa', fecha: '2026-06-18', hora: '10:00', canales: ['vix'] },
       { local: 'mexico',        visita: 'corea_del_sur',   fecha: '2026-06-18', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
       { local: 'mexico',        visita: 'republica_checa', fecha: '2026-06-24', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
       { local: 'corea_del_sur', visita: 'sudafrica',       fecha: '2026-06-24', hora: '19:00', canales: ['vix'] },
-
-      // Grupo B
       { local: 'canada',        visita: 'bosnia',          fecha: '2026-06-12', hora: '13:00', canales: ['vix'] },
       { local: 'qatar',         visita: 'suiza',           fecha: '2026-06-13', hora: '13:00', canales: ['vix'] },
       { local: 'suiza',         visita: 'bosnia',          fecha: '2026-06-18', hora: '13:00', canales: ['vix'] },
       { local: 'canada',        visita: 'qatar',           fecha: '2026-06-18', hora: '16:00', canales: ['vix'] },
       { local: 'canada',        visita: 'suiza',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] },
-      { local: 'bosnia',        visita: 'qatar',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] },
-
-      // Grupo C
-      { local: 'brasil',        visita: 'marruecos',       fecha: '2026-06-13', hora: '16:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'haiti',         visita: 'escocia',         fecha: '2026-06-13', hora: '19:00', canales: ['vix'] },
-      { local: 'escocia',       visita: 'marruecos',       fecha: '2026-06-19', hora: '16:00', canales: ['vix'] },
-      { local: 'brasil',        visita: 'haiti',           fecha: '2026-06-19', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'brasil',        visita: 'escocia',         fecha: '2026-06-24', hora: '16:00', canales: ['vix'] },
-      { local: 'marruecos',     visita: 'haiti',           fecha: '2026-06-24', hora: '16:00', canales: ['vix'] },
-
-      // Grupo D
-      { local: 'usa',           visita: 'paraguay',        fecha: '2026-06-12', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'australia',     visita: 'turquia',         fecha: '2026-06-14', hora: '10:00', canales: ['vix'] },
-      { local: 'usa',           visita: 'australia',       fecha: '2026-06-19', hora: '13:00', canales: ['vix'] },
-      { local: 'paraguay',      visita: 'turquia',         fecha: '2026-06-20', hora: '10:00', canales: ['vix'] },
-      { local: 'usa',           visita: 'turquia',         fecha: '2026-06-25', hora: '20:00', canales: ['vix'] },
-      { local: 'australia',     visita: 'paraguay',        fecha: '2026-06-25', hora: '20:00', canales: ['vix'] },
-
-      // Grupo E
-      { local: 'alemania',      visita: 'curazao',         fecha: '2026-06-14', hora: '11:00', canales: ['vix'] },
-      { local: 'ecuador',       visita: 'costa_de_marfil', fecha: '2026-06-14', hora: '17:00', canales: ['vix'] },
-      { local: 'alemania',      visita: 'costa_de_marfil', fecha: '2026-06-20', hora: '14:00', canales: ['vix'] },
-      { local: 'ecuador',       visita: 'curazao',         fecha: '2026-06-20', hora: '18:00', canales: ['vix'] },
-      { local: 'ecuador',       visita: 'alemania',        fecha: '2026-06-25', hora: '14:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'curazao',       visita: 'costa_de_marfil', fecha: '2026-06-25', hora: '14:00', canales: ['vix'] },
-
-      // Grupo F
-      { local: 'paises_bajos',  visita: 'japon',           fecha: '2026-06-14', hora: '14:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'suecia',        visita: 'tunez',           fecha: '2026-06-14', hora: '20:00', canales: ['vix'] },
-      { local: 'paises_bajos',  visita: 'suecia',          fecha: '2026-06-20', hora: '11:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'tunez',         visita: 'japon',           fecha: '2026-06-21', hora: '10:00', canales: ['vix'] },
-      { local: 'paises_bajos',  visita: 'tunez',           fecha: '2026-06-25', hora: '17:00', canales: ['vix'] },
-      { local: 'japon',         visita: 'suecia',          fecha: '2026-06-25', hora: '17:00', canales: ['vix'] },
-
-      // Grupo G
-      { local: 'belgica',       visita: 'egipto',          fecha: '2026-06-15', hora: '13:00', canales: ['vix'] },
-      { local: 'iran',          visita: 'nueva_zelanda',   fecha: '2026-06-15', hora: '19:00', canales: ['vix'] },
-      { local: 'belgica',       visita: 'iran',            fecha: '2026-06-21', hora: '13:00', canales: ['vix'] },
-      { local: 'nueva_zelanda', visita: 'egipto',          fecha: '2026-06-21', hora: '19:00', canales: ['vix'] },
-      { local: 'belgica',       visita: 'nueva_zelanda',   fecha: '2026-06-27', hora: '21:00', canales: ['vix'] },
-      { local: 'egipto',        visita: 'iran',            fecha: '2026-06-27', hora: '21:00', canales: ['vix'] },
-
-      // Grupo H
-      { local: 'espana',        visita: 'cabo_verde',      fecha: '2026-06-15', hora: '10:00', canales: ['vix'] },
-      { local: 'arabia_saudita',visita: 'uruguay',         fecha: '2026-06-15', hora: '16:00', canales: ['vix'] },
-      { local: 'espana',        visita: 'arabia_saudita',  fecha: '2026-06-21', hora: '10:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'uruguay',       visita: 'cabo_verde',      fecha: '2026-06-21', hora: '16:00', canales: ['vix'] },
-      { local: 'espana',        visita: 'uruguay',         fecha: '2026-06-26', hora: '18:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'cabo_verde',    visita: 'arabia_saudita',  fecha: '2026-06-26', hora: '18:00', canales: ['vix'] },
-
-      // Grupo I
-      { local: 'francia',       visita: 'senegal',         fecha: '2026-06-16', hora: '13:00', canales: ['vix'] },
-      { local: 'iraq',          visita: 'noruega',         fecha: '2026-06-16', hora: '16:00', canales: ['vix'] },
-      { local: 'francia',       visita: 'iraq',            fecha: '2026-06-22', hora: '15:00', canales: ['vix'] },
-      { local: 'noruega',       visita: 'senegal',         fecha: '2026-06-22', hora: '18:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'francia',       visita: 'noruega',         fecha: '2026-06-26', hora: '13:00', canales: ['vix'] },
-      { local: 'senegal',       visita: 'iraq',            fecha: '2026-06-26', hora: '13:00', canales: ['vix'] },
-
-      // Grupo J
-      { local: 'argentina',     visita: 'argelia',         fecha: '2026-06-16', hora: '19:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'austria',       visita: 'jordania',        fecha: '2026-06-17', hora: '22:00', canales: ['vix'] },
-      { local: 'argentina',     visita: 'austria',         fecha: '2026-06-22', hora: '11:00', canales: ['vix'] },
-      { local: 'argelia',       visita: 'jordania',        fecha: '2026-06-23', hora: '21:00', canales: ['vix'] },
-      { local: 'argentina',     visita: 'jordania',        fecha: '2026-06-27', hora: '20:00', canales: ['vix'] },
-      { local: 'argelia',       visita: 'austria',         fecha: '2026-06-27', hora: '20:00', canales: ['vix'] },
-
-      // Grupo K
-      { local: 'portugal',      visita: 'rd_congo',        fecha: '2026-06-17', hora: '11:00', canales: ['vix'] },
-      { local: 'uzbekistan',    visita: 'colombia',        fecha: '2026-06-17', hora: '20:00', canales: ['vix'] },
-      { local: 'portugal',      visita: 'uzbekistan',      fecha: '2026-06-23', hora: '11:00', canales: ['vix'] },
-      { local: 'colombia',      visita: 'rd_congo',        fecha: '2026-06-23', hora: '20:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'portugal',      visita: 'colombia',        fecha: '2026-06-27', hora: '17:30', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'rd_congo',      visita: 'uzbekistan',      fecha: '2026-06-27', hora: '17:30', canales: ['vix'] },
-
-      // Grupo L
-      { local: 'inglaterra',    visita: 'croacia',         fecha: '2026-06-17', hora: '14:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'ghana',         visita: 'panama',          fecha: '2026-06-17', hora: '17:00', canales: ['vix'] },
-      { local: 'inglaterra',    visita: 'ghana',           fecha: '2026-06-23', hora: '14:00', canales: ['vix'] },
-      { local: 'panama',        visita: 'croacia',         fecha: '2026-06-23', hora: '17:00', canales: ['vix'] },
-      { local: 'inglaterra',    visita: 'panama',          fecha: '2026-06-27', hora: '15:00', canales: ['televisa', 'azteca', 'vix'] },
-      { local: 'croacia',       visita: 'ghana',           fecha: '2026-06-27', hora: '15:00', canales: ['vix'] },
+      { local: 'bosnia',        visita: 'qatar',           fecha: '2026-06-24', hora: '13:00', canales: ['vix'] }
     ];
-  }
+}
 
   const PARTIDOS_DEFAULT = generarPartidosDefault();
   const LS_KEY = 'quiniela_mundial_v2_72';
@@ -1092,10 +1021,6 @@
   const nombreEquipo = id => (EQUIPOS.find(e => e.id === id) || {}).nombre || id;
   const nombreCanal  = id => (CANALES.find(c => c.id === id) || {}).nombre || id.toUpperCase();
 
-  /**
-   * Normaliza el campo de canales:
-   * Acepta string (legado) o array y devuelve siempre un array.
-   */
   function normalizarCanales(canales) {
     if (!canales) return ['vix'];
     if (Array.isArray(canales)) return canales.length ? canales : ['vix'];
@@ -1127,10 +1052,6 @@
     el._t = setTimeout(() => el.classList.remove('show'), dur);
   }
 
-  /**
-   * Construye el HTML para la zona de canales en la barra de info.
-   * Muestra logo + nombre de cada canal separados por un punto.
-   */
   function buildCanalesHTML(canales) {
     const arr = normalizarCanales(canales);
     return arr.map((cid, idx) => {
@@ -1181,70 +1102,57 @@
     };
   }
 
-  /* ══ 5. RENDER PARTIDOS ══ */
-  function renderPartidos(datos) {
+  /* ══ 5. RENDER PARTIDOS - 12 PARTIDOS EN UNA SOLA COLUMNA (VERSIÓN ESTABLE) ══ */
+function renderPartidos(datos) {
     const cont = document.getElementById('contenedor-partidos');
     cont.innerHTML = '';
+    cont.style.display = 'block';   // ← Regresamos a columna simple
 
     datos.forEach((p, i) => {
-      const nomLocal  = nombreEquipo(p.local);
-      const nomVisita = nombreEquipo(p.visita);
-      const canales   = normalizarCanales(p.canales);
+        const nomLocal  = nombreEquipo(p.local);
+        const nomVisita = nombreEquipo(p.visita);
+        const canales   = normalizarCanales(p.canales);
 
-      const div = document.createElement('div');
-      div.className      = 'partido';
-      div.dataset.idx    = i;
-      div.dataset.local  = p.local;
-      div.dataset.visita = p.visita;
-      div.dataset.canales = JSON.stringify(canales);
-      div.dataset.fecha  = p.fecha  || '';
-      div.dataset.hora   = p.hora   || '';
+        const div = document.createElement('div');
+        div.className = 'partido';
+        div.dataset.idx = i;
+        div.dataset.local = p.local;
+        div.dataset.visita = p.visita;
+        div.dataset.canales = JSON.stringify(canales);
+        div.dataset.fecha = p.fecha || '';
+        div.dataset.hora = p.hora || '';
 
-      div.innerHTML = `
-        <span class="partido-num">${i + 1}</span>
-        <div class="fila-partido">
-          <div class="equipo equipo-local">
-            <img src="${logoEquipo(p.local)}" alt="${nomLocal}" title="${nomLocal}"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-            <div class="equipo-fallback" style="display:none;">${shortEquipo(p.local)}</div>
-            <span class="equipo-nombre">${nomLocal}</span>
-          </div>
-          <div class="score-zone">
-            <div class="score-wrap">
-              <div class="score" contenteditable="true" inputmode="numeric" role="spinbutton"
-                aria-label="Goles ${nomLocal} partido ${i+1}" data-partido="${i}" data-tipo="local">0</div>
+        div.innerHTML = `
+            <span class="partido-num">${i + 1}</span>
+            <div class="fila-partido">
+                <div class="equipo equipo-local">
+                    <img src="${logoEquipo(p.local)}" alt="${nomLocal}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="equipo-fallback" style="display:none;">${shortEquipo(p.local)}</div>
+                    <span class="equipo-nombre">${nomLocal}</span>
+                </div>
+                <div class="score-zone">
+                    <div class="score" contenteditable="true" data-partido="${i}" data-tipo="local">0</div>
+                    <span style="padding:0 8px;color:#ccc;font-size:13px;">VS</span>
+                    <div class="score" contenteditable="true" data-partido="${i}" data-tipo="visita">0</div>
+                </div>
+                <div class="equipo equipo-visita">
+                    <img src="${logoEquipo(p.visita)}" alt="${nomVisita}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="equipo-fallback" style="display:none;">${shortEquipo(p.visita)}</div>
+                    <span class="equipo-nombre">${nomVisita}</span>
+                </div>
             </div>
-            <div class="score-divider">
-              <div class="score-divider-dash"></div>
-              <span class="vs-text">VS</span>
-              <div class="score-divider-dash"></div>
+            <div class="p-info-bar">
+                <span class="p-bar-fecha">${formatFecha(p.fecha)}</span>
+                <div class="p-bar-canales">${buildCanalesHTML(canales)}</div>
+                <span class="p-bar-hora">${formatHora(p.hora)}</span>
             </div>
-            <div class="score-wrap">
-              <div class="score" contenteditable="true" inputmode="numeric" role="spinbutton"
-                aria-label="Goles ${nomVisita} partido ${i+1}" data-partido="${i}" data-tipo="visita">0</div>
-            </div>
-          </div>
-          <div class="equipo equipo-visita">
-            <img src="${logoEquipo(p.visita)}" alt="${nomVisita}" title="${nomVisita}"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-            <div class="equipo-fallback" style="display:none;">${shortEquipo(p.visita)}</div>
-            <span class="equipo-nombre">${nomVisita}</span>
-          </div>
-        </div>
-        <div class="p-info-bar">
-          <span class="p-bar-fecha">${formatFecha(p.fecha)}</span>
-          <div class="p-bar-canales">
-            ${buildCanalesHTML(canales)}
-          </div>
-          <span class="p-bar-hora">${formatHora(p.hora)}</span>
-        </div>
-      `;
+        `;
 
-      cont.appendChild(div);
+        cont.appendChild(div);
     });
 
     activarEventosScore();
-  }
+}
 
   /* ══ 6. EVENTOS SCORES ══ */
   function activarEventosScore() {
@@ -1394,7 +1302,6 @@
     document.getElementById('apLocal').value  = partido.dataset.local  || '';
     document.getElementById('apVisita').value = partido.dataset.visita || '';
 
-    // Marcar los canales activos en el multi-select
     const canalesActivos = normalizarCanales(JSON.parse(partido.dataset.canales || '["vix"]'));
     const selCanales = document.getElementById('apCanales');
     Array.from(selCanales.options).forEach(opt => {
@@ -1415,7 +1322,6 @@
     const local   = document.getElementById('apLocal').value;
     const visita  = document.getElementById('apVisita').value;
 
-    // Leer canales seleccionados del multi-select
     const selCanales = document.getElementById('apCanales');
     const canales = Array.from(selCanales.selectedOptions).map(o => o.value);
     const canalesFinal = canales.length ? canales : ['vix'];
@@ -1482,152 +1388,136 @@
   window.resetearTodo = resetearTodo;
 
   /* ══════════════════════════════════════════════════════
-     9. HELPER: CAPTURAR QUINIELA COMO CANVAS
-     Opciones de calidad mejoradas
-  ══════════════════════════════════════════════════════ */
-  async function capturarCanvas(escala = 4) {
-  const quiniela = document.getElementById('quiniela');
-  return html2canvas(quiniela, {
-    scale: escala,
-    useCORS: true,
-    allowTaint: false,
-    backgroundColor: '#ffffff',
-    logging: false,
-    imageTimeout: 12000,
-    removeContainer: true,
-    letterRendering: true,
-    width: quiniela.offsetWidth,
-    height: quiniela.offsetHeight
-  });
-}
+   CAPTURA + EXPORTAR + COMPARTIR - VERSIÓN ESTABLE (ESCALA 5)
+══════════════════════════════════════════════════════ */
 
-  /* ══════════════════════════════════════════════════════
-     10. EXPORTAR PNG (scale 4 para mayor nitidez)
-  ══════════════════════════════════════════════════════ */
-  document.getElementById('btnGuardar').addEventListener('click', exportarPNG);
-
-  async function exportarPNG() {
-    const btn = document.getElementById('btnGuardar');
-    const textoOriginal = btn.innerHTML;
-
-    btn.innerHTML = '<span>Guardando…</span>';
-    btn.disabled  = true;
+async function capturarCanvas() {
+    const quiniela = document.getElementById('quiniela');
     document.body.classList.add('modo-imagen');
-
-    const scores  = document.getElementById('quiniela').querySelectorAll('.score');
-    const valores = Array.from(scores).map(s => s.textContent);
+    
+    await new Promise(r => setTimeout(r, 200)); // delay importante para iPhone
 
     try {
-      scores.forEach(s => { s.contentEditable = false; s.style.pointerEvents = 'none'; });
-      if (panelAbierto) togglePanelAdmin();
-      await new Promise(r => setTimeout(r, 180));
-
-      const canvas = await capturarCanvas(4);
-      const link   = document.createElement('a');
-      const nombre = document.getElementById('nombreJugador').textContent.trim() || 'jugador';
-      link.download = `quiniela-mundial-${nombre.toLowerCase()}.png`;
-      link.href     = canvas.toDataURL('image/png');
-      link.click();
-      toast('✅ Imagen descargada correctamente');
-    } catch(err) {
-      console.error(err);
-      toast('❌ Error al guardar imagen');
+        return await html2canvas(quiniela, {
+            scale: 5,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: "#ffffff",
+            logging: false,
+            imageTimeout: 30000,
+            width: quiniela.offsetWidth,
+            height: quiniela.offsetHeight,
+            scrollX: 0,
+            scrollY: 0
+        });
     } finally {
-      scores.forEach((s,i) => { s.contentEditable = true; s.textContent = valores[i]; s.style.pointerEvents = ''; });
-      document.body.classList.remove('modo-imagen');
-      btn.innerHTML = textoOriginal;
-      btn.disabled  = false;
+        document.body.classList.remove('modo-imagen');
     }
-  }
+}
 
-  /* ══════════════════════════════════════════════════════
-   11. COMPARTIR — Versión simplificada y más estable
+// Botón Guardar PNG
+document.getElementById('btnGuardar').addEventListener('click', async () => {
+    const btn = document.getElementById('btnGuardar');
+    const original = btn.innerHTML;
+    btn.innerHTML = 'Generando...';
+    btn.disabled = true;
+
+    try {
+        const canvas = await capturarCanvas();
+        const link = document.createElement('a');
+        const nombre = document.getElementById('nombreJugador').textContent.trim() || 'jugador';
+        link.download = `quiniela-mundial-${nombre.toLowerCase()}.png`;
+        link.href = canvas.toDataURL('image/png', 0.98);
+        link.click();
+        toast('✅ Imagen guardada en alta calidad');
+    } catch(e) {
+        toast('❌ Error al generar imagen');
+    } finally {
+        btn.innerHTML = original;
+        btn.disabled = false;
+    }
+});
+
+/* ══════════════════════════════════════════════════════
+   COMPARTIR - VERSIÓN OPTIMIZADA PARA IPHONE + ANDROID
 ══════════════════════════════════════════════════════ */
 const btnCompartir = document.getElementById('btnCompartir');
 
-if (navigator.share) {
-  btnCompartir.style.display = 'flex';
-}
-
 btnCompartir.addEventListener('click', async () => {
-  const nombre = document.getElementById('nombreJugador').textContent.trim() || 'Jugador';
+    const nombre = document.getElementById('nombreJugador').textContent.trim() || 'Jugador';
 
-  document.body.classList.add('modo-imagen');
-  if (panelAbierto) togglePanelAdmin();
+    document.body.classList.add('modo-imagen');
+    if (panelAbierto) togglePanelAdmin();
 
-  const scores  = document.getElementById('quiniela').querySelectorAll('.score');
-  const valores = Array.from(scores).map(s => s.textContent);
+    try {
+        // Más tiempo para que iPhone renderice correctamente
+        await new Promise(r => setTimeout(r, 400));
 
-  try {
-    scores.forEach(s => { s.contentEditable = false; s.style.pointerEvents = 'none'; });
-    await new Promise(r => setTimeout(r, 150));
+        const canvas = await html2canvas(document.getElementById('quiniela'), {
+            scale: 4,                    // Bajamos un poco para mayor estabilidad en iPhone
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: "#ffffff",
+            logging: false,
+            imageTimeout: 40000,
+            width: document.getElementById('quiniela').offsetWidth,
+            height: document.getElementById('quiniela').offsetHeight
+        });
 
-    // Usamos scale 4 para mejor calidad en ambos sistemas
-    const canvas = await capturarCanvas(4);
-    const blob   = await new Promise(res => canvas.toBlob(res, 'image/png', 0.95));
-    const file   = new File([blob], `quiniela-${nombre.toLowerCase()}.png`, { type: 'image/png' });
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 0.92));
+        const file = new File([blob], `quiniela-${nombre.toLowerCase()}.png`, { type: 'image/png' });
 
-    // Intentar compartir directamente (funciona mejor en iPhone)
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: 'Mi Quiniela Mundial 2026',
-        text: `⚽ Quiniela de ${nombre} - Mundial 2026`,
-        files: [file]
-      });
-    } 
-    // Fallback: Descargar + mensaje claro (bueno para Android)
-    else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+        // Intento de compartir directo
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                title: 'Mi Quiniela Mundial 2026',
+                text: `⚽ Quiniela de ${nombre}`,
+                files: [file]
+            });
+        } else {
+            // Fallback seguro
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
 
-      toast('✅ Imagen guardada en Descargas\nAbre tu galería → Comparte por WhatsApp', 4500);
+            toast('✅ Imagen descargada correctamente.\nAbre Fotos → Comparte por WhatsApp', 5000);
+        }
+
+    } catch (err) {
+        console.error(err);
+        toast('❌ Error al compartir. Se guardó la imagen en Descargas.', 4000);
+    } finally {
+        document.body.classList.remove('modo-imagen');
     }
-
-  } catch(err) {
-    console.error(err);
-    toast('❌ Error al compartir. Se guardó la imagen.');
-  } finally {
-    scores.forEach((s,i) => { 
-      s.contentEditable = true; 
-      s.textContent = valores[i]; 
-      s.style.pointerEvents = ''; 
-    });
-    document.body.classList.remove('modo-imagen');
-  }
 });
 
   /* ══ 12. INICIALIZACIÓN ══ */
-  async function init() {
-    const guardado = await cargarDatosAdmin();
+async function init() {
+  const guardado = await cargarDatosAdmin();
 
-    let partidos = PARTIDOS_DEFAULT;
-    let titulo   = 'MUNDIAL 2026';
+  let partidos = PARTIDOS_DEFAULT;
+  let titulo   = 'MUNDIAL 2026';
 
-    if (guardado) {
-      if (Array.isArray(guardado.partidos) && guardado.partidos.length === 72) {
-        // Migrar partidos legados que usen 'canal' en lugar de 'canales'
-        partidos = guardado.partidos.map(p => ({
-          ...p,
-          canales: normalizarCanales(p.canales || p.canal),
-        }));
-      }
-      if (guardado.titulo) titulo = guardado.titulo;
-    }
-
-    document.getElementById('tituloJornada').textContent = titulo;
-    renderPartidos(partidos);
-
-    modal.style.display = 'flex';
-    setTimeout(() => inputNombre.focus(), 150);
+  if (guardado && Array.isArray(guardado.partidos) && guardado.partidos.length === 12) {
+    partidos = guardado.partidos.map(p => ({
+      ...p,
+      canales: normalizarCanales(p.canales || p.canal),
+    }));
   }
 
-  init();
+  document.getElementById('tituloJornada').textContent = titulo;
+  renderPartidos(partidos);
+
+  modal.style.display = 'flex';
+  setTimeout(() => inputNombre.focus(), 150);
+}
+
+init();
   </script>
 
 </body>
