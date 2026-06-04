@@ -888,6 +888,12 @@
   const db = firebase.firestore();
 
   /* ══════════════════════════════════════════════════════
+     DETECCIÓN DE PLATAFORMA
+  ══════════════════════════════════════════════════════ */
+  const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const IS_ANDROID = /Android/i.test(navigator.userAgent);
+
+  /* ══════════════════════════════════════════════════════
      1. DATOS
   ══════════════════════════════════════════════════════ */
 
@@ -1475,27 +1481,46 @@
 
   window.resetearTodo = resetearTodo;
 
-  /* ══ 9. EXPORTAR PNG ══ */
+  /* ══════════════════════════════════════════════════════
+     9. HELPER: CAPTURAR QUINIELA COMO CANVAS
+     Opciones de calidad mejoradas
+  ══════════════════════════════════════════════════════ */
+  async function capturarCanvas(escala = 4) {
+    const quiniela = document.getElementById('quiniela');
+    return html2canvas(quiniela, {
+      scale:           escala,
+      useCORS:         true,
+      allowTaint:      false,
+      backgroundColor: '#ffffff',
+      logging:         false,
+      imageTimeout:    8000,
+      removeContainer: true,
+      letterRendering: true,
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════
+     10. EXPORTAR PNG (scale 4 para mayor nitidez)
+  ══════════════════════════════════════════════════════ */
   document.getElementById('btnGuardar').addEventListener('click', exportarPNG);
 
   async function exportarPNG() {
-    const quiniela = document.getElementById('quiniela');
     const btn = document.getElementById('btnGuardar');
     const textoOriginal = btn.innerHTML;
 
-    btn.innerHTML = 'Guardando...';
+    btn.innerHTML = '<span>Guardando…</span>';
     btn.disabled  = true;
     document.body.classList.add('modo-imagen');
 
-    const scores  = quiniela.querySelectorAll('.score');
+    const scores  = document.getElementById('quiniela').querySelectorAll('.score');
     const valores = Array.from(scores).map(s => s.textContent);
 
     try {
       scores.forEach(s => { s.contentEditable = false; s.style.pointerEvents = 'none'; });
       if (panelAbierto) togglePanelAdmin();
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise(r => setTimeout(r, 180));
 
-      const canvas = await html2canvas(quiniela, { scale: 3, useCORS: true, backgroundColor: '#ffffff' });
+      const canvas = await capturarCanvas(4);
       const link   = document.createElement('a');
       const nombre = document.getElementById('nombreJugador').textContent.trim() || 'jugador';
       link.download = `quiniela-mundial-${nombre.toLowerCase()}.png`;
@@ -1513,45 +1538,106 @@
     }
   }
 
-  /* ══ 10. COMPARTIR ══ */
+  /* ══════════════════════════════════════════════════════
+     11. COMPARTIR — LÓGICA INTELIGENTE POR PLATAFORMA
+
+     • iOS (iPhone/iPad): usa navigator.share directamente
+       para abrir el selector nativo (AirDrop, WhatsApp, etc.)
+     • Android y otros: descarga la imagen y muestra un
+       toast claro indicando que la abran desde la galería.
+     • Fallback si share no está disponible: descarga siempre.
+  ══════════════════════════════════════════════════════ */
   const btnCompartir = document.getElementById('btnCompartir');
 
-  if (navigator.share) {
+  // Mostrar el botón solo si el navegador tiene alguna capacidad de compartir/descargar
+  if (navigator.share || true) {
     btnCompartir.style.display = 'flex';
-    btnCompartir.addEventListener('click', async () => {
-      const quiniela = document.getElementById('quiniela');
-      const nombre   = document.getElementById('nombreJugador').textContent.trim() || 'Jugador';
-
-      document.body.classList.add('modo-imagen');
-      if (panelAbierto) togglePanelAdmin();
-
-      try {
-        await new Promise(r => setTimeout(r, 150));
-        const canvas = await html2canvas(quiniela, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-        const blob   = await new Promise(res => canvas.toBlob(res, 'image/png'));
-        const file   = new File([blob], `quiniela-${nombre.toLowerCase()}.png`, { type: 'image/png' });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ title: 'Mi Quiniela Mundial 2026', text: `⚽ Quiniela de ${nombre} - Mundial 2026`, files: [file] });
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a   = document.createElement('a');
-          a.href = url; a.download = file.name;
-          document.body.appendChild(a); a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast('✅ Imagen descargada. Comparte desde Galería/Fotos');
-        }
-      } catch(err) {
-        console.error(err);
-        toast('❌ Error al compartir');
-      } finally {
-        document.body.classList.remove('modo-imagen');
-      }
-    });
   }
 
-  /* ══ 11. INICIALIZACIÓN ══ */
+  btnCompartir.addEventListener('click', async () => {
+    const nombre = document.getElementById('nombreJugador').textContent.trim() || 'Jugador';
+
+    document.body.classList.add('modo-imagen');
+    if (panelAbierto) togglePanelAdmin();
+
+    const scores  = document.getElementById('quiniela').querySelectorAll('.score');
+    const valores = Array.from(scores).map(s => s.textContent);
+
+    try {
+      scores.forEach(s => { s.contentEditable = false; s.style.pointerEvents = 'none'; });
+      await new Promise(r => setTimeout(r, 180));
+
+      // Escala 3 para compartir (balance entre tamaño de archivo y calidad)
+      const canvas = await capturarCanvas(3);
+      const blob   = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      const file   = new File([blob], `quiniela-${nombre.toLowerCase()}.png`, { type: 'image/png' });
+
+      if (IS_IOS && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        /* ── iOS: compartir nativo directamente ── */
+        await navigator.share({
+          title: 'Mi Quiniela Mundial 2026',
+          text:  `⚽ Quiniela de ${nombre} · Mundial 2026`,
+          files: [file],
+        });
+
+      } else if (IS_ANDROID || !navigator.share) {
+        /* ── Android y otros: descargar + instrucción clara ── */
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.href     = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        toast('✅ Imagen guardada. Abre tu galería para compartirla por WhatsApp, etc.', 4000);
+
+      } else if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        /* ── Otros con Web Share API que soporta archivos ── */
+        await navigator.share({
+          title: 'Mi Quiniela Mundial 2026',
+          text:  `⚽ Quiniela de ${nombre} · Mundial 2026`,
+          files: [file],
+        });
+
+      } else if (navigator.share) {
+        /* ── Web Share sin soporte de archivos: compartir URL de blob ── */
+        const url = URL.createObjectURL(blob);
+        try {
+          await navigator.share({
+            title: 'Mi Quiniela Mundial 2026',
+            text:  `⚽ Quiniela de ${nombre} · Mundial 2026`,
+            url,
+          });
+        } finally {
+          setTimeout(() => URL.revokeObjectURL(url), 3000);
+        }
+
+      } else {
+        /* ── Fallback absoluto: descarga directa ── */
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.href     = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        toast('✅ Imagen descargada. Comparte desde tu galería', 3500);
+      }
+
+    } catch(err) {
+      if (err.name !== 'AbortError') {
+        console.error(err);
+        toast('❌ Error al compartir');
+      }
+    } finally {
+      scores.forEach((s,i) => { s.contentEditable = true; s.textContent = valores[i]; s.style.pointerEvents = ''; });
+      document.body.classList.remove('modo-imagen');
+    }
+  });
+
+  /* ══ 12. INICIALIZACIÓN ══ */
   async function init() {
     const guardado = await cargarDatosAdmin();
 
