@@ -769,7 +769,7 @@
       <div class="ap-header-icon">⚙️</div>
       <div class="ap-header-text">
         <h3>Panel Admin</h3>
-        <span>Mundial 2026 · 18 partidos</span>
+        <span>Mundial 2026 · v1 (18 partidos)</span>
       </div>
       <button class="ap-close" title="Cerrar" onclick="togglePanelAdmin()">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -854,7 +854,7 @@
       <div class="q-stripe"></div>
       <div id="contenedor-partidos" class="partidos-grid"></div>
       <footer class="q-footer">
-  <span>⚽ MUNDIAL 2026 · 18 PARTIDOS</span>
+  <span>⚽ MUNDIAL 2026 · v1 (18 PARTIDOS)</span>
 </footer>
     </div>
 
@@ -898,6 +898,7 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  const QUINIELA_ID = 'v1';   // ← Esta es la Quiniela 1
 
   /* ══════════════════════════════════════════════════════
      DETECCIÓN DE PLATAFORMA
@@ -1015,7 +1016,7 @@
 }
 
   const PARTIDOS_DEFAULT = generarPartidosDefault();
-  const LS_KEY = 'quiniela_mundial_v2_72';
+  const LS_KEY = `quiniela_mundial_${QUINIELA_ID}_72`;
 
   /* ══ 2. ESTADO ══ */
   let isAdmin      = false;
@@ -1075,24 +1076,24 @@
 
   /* ══ 4. FIREBASE PERSISTENCIA ══ */
   async function cargarDatosAdmin() {
-    try {
-      const doc = await db.collection('quiniela').doc('config').get();
-      return doc.exists ? doc.data() : null;
-    } catch(e) {
-      console.log('Sin Firebase, usando defaults');
-      return null;
-    }
+  try {
+    const doc = await db.collection('quiniela').doc(`config-${QUINIELA_ID}`).get();
+    return doc.exists ? doc.data() : null;
+  } catch(e) {
+    console.log('Sin Firebase, usando defaults');
+    return null;
   }
+}
 
-  async function guardarDatosAdmin(data) {
-    try {
-      await db.collection('quiniela').doc('config').set(data);
-      toast('✅ Cambios guardados (visibles para todos)');
-    } catch(e) {
-      console.error(e);
-      toast('❌ Error al guardar en la nube');
-    }
+async function guardarDatosAdmin(data) {
+  try {
+    await db.collection('quiniela').doc(`config-${QUINIELA_ID}`).set(data);
+    toast('✅ Cambios guardados (visibles para todos)');
+  } catch(e) {
+    console.error(e);
+    toast('❌ Error al guardar en la nube');
   }
+}
 
   function obtenerEstadoActual() {
     const partidos = Array.from(document.querySelectorAll('.partido')).map(p => ({
